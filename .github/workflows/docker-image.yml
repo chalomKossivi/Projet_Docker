@@ -1,0 +1,22 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloner le code
+        uses: actions/checkout@v3
+
+      - name: Se connecter à Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Builder et push l’image
+        run: |
+          docker build -t monrepo/mon-app-ci-cd .
+          docker tag monrepo/mon-app-ci-cd monrepo/mon-app-ci-cd:latest
+          docker push monrepo/mon-app-ci-cd:latest
